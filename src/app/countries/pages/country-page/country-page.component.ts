@@ -1,10 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CountriesService } from '../../services/countries.service';
+import { switchMap } from 'rxjs';
+import { Country } from '../../interfaces/country.interface';
 
 @Component({
   selector: 'app-country-page',
   templateUrl: './country-page.component.html',
-  styles: ``
+  styles: ``,
 })
-export class CountryPageComponent {
+export class CountryPageComponent implements OnInit {
+  private activadtedRouter = inject(ActivatedRoute);
+  private countriesService = inject(CountriesService);
+  private router = inject(Router);
+  country?: Country;
 
+  ngOnInit(): void {
+    this.activadtedRouter.params
+      .pipe(
+        switchMap(({ id }) =>
+          this.countriesService.searchCountryByAlphaCode(id)
+        )
+      )
+      .subscribe((country) => {
+        if (!country) {
+          return this.router.navigateByUrl('');
+        }
+        this.country = country;
+
+        return;
+      });
+  }
 }
