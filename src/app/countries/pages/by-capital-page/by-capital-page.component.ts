@@ -9,8 +9,8 @@ export class ByCapitalPageComponent {
   countries: Country[] = [];
   private countriesService = inject(CountriesService);
   searchByCapital(termino: string): void {
-    this.countriesService
-      .searchCapital(termino)
-      .subscribe((countries) => (this.countries = countries));
+    this.countriesService.searchCapital(termino).subscribe({
+      next: (countries) => (this.countries = countries),
+    });
   }
 }
